@@ -1,0 +1,286 @@
+সেই ছবি গুলোকে room1.jpg, room2.jpg, room3.jpg, room4.jpg, room5.jpg, room6.jpg নামে rename করে রাখবে।
+
+Logo এর জন্য একটি PNG ছবি ডাউনলোড করে logo.png নামে রাখবে।
+
+
+
+Email / Username = admin@hotel.com
+
+Password = admin123
+
+Role = admin
+
+
+
+🛠 Step 2: তোমার নিজের User বানাও (Optional, একবার করলে হবে)
+
+যদি আলাদা user বানাতে চাও (যেমন hotel):
+
+CREATE USER hotel IDENTIFIED BY hotel123;
+GRANT CONNECT, RESOURCE TO hotel;
+
+
+
+
+
+SQL*Plus: Release 21.0.0.0.0 - Production on Mon Sep 15 03:20:10 2025
+Version 21.3.0.0.0
+
+Copyright (c) 1982, 2021, Oracle.  All rights reserved.
+
+Enter user-name: system
+Enter password:
+Last Successful login time: Mon Sep 15 2025 02:09:59 +06:00
+
+Connected to:
+Oracle Database 21c Express Edition Release 21.0.0.0.0 - Production
+Version 21.3.0.0.0
+
+
+
+
+SQL> CREATE TABLE Rooms(
+  2      room_id NUMBER PRIMARY KEY,
+  3      room_name VARCHAR2(50),
+  4      room_type VARCHAR2(50),
+  5      price NUMBER(10,2),
+  6      image VARCHAR2(100),
+  7      description VARCHAR2(500)
+  8  );
+
+Table created.
+
+SQL>
+SQL> CREATE TABLE Users(
+  2      user_id NUMBER PRIMARY KEY,
+  3      username VARCHAR2(50) UNIQUE NOT NULL,
+  4      password VARCHAR2(50) NOT NULL,
+  5      full_name VARCHAR2(100),
+  6      email VARCHAR2(100),
+  7      phone VARCHAR2(20)
+  8  );
+
+Table created.
+
+SQL>
+SQL> CREATE TABLE Bookings(
+  2      booking_id NUMBER PRIMARY KEY,
+  3      user_id NUMBER REFERENCES Users(user_id),
+  4      room_id NUMBER REFERENCES Rooms(room_id),
+  5      check_in DATE,
+  6      check_out DATE,
+  7      total_amount NUMBER(10,2)
+  8  );
+
+Table created.
+
+SQL>
+SQL> CREATE TABLE Reviews(
+  2      review_id NUMBER PRIMARY KEY,
+  3      user_id NUMBER REFERENCES Users(user_id),
+  4      room_id NUMBER REFERENCES Rooms(room_id),
+  5      rating NUMBER(1),
+  6      review_comment VARCHAR2(500),
+  7      review_date DATE DEFAULT SYSDATE
+  8  );
+
+Table created.
+
+SQL>
+SQL> CREATE TABLE Contact(
+  2      contact_id NUMBER PRIMARY KEY,
+  3      name VARCHAR2(100),
+  4      email VARCHAR2(100),
+  5      subject VARCHAR2(200),
+  6      message VARCHAR2(1000),
+  7      contact_date DATE DEFAULT SYSDATE
+  8  );
+
+Table created.
+
+SQL>
+SQL> CREATE TABLE Admins(
+  2      admin_id NUMBER PRIMARY KEY,
+  3      username VARCHAR2(50) UNIQUE NOT NULL,
+  4      password VARCHAR2(50) NOT NULL,
+  5      full_name VARCHAR2(100)
+  6  );
+
+Table created.
+
+SQL>
+SQL> -- =========================
+SQL> -- CREATE SEQUENCES
+SQL> -- =========================
+SQL> CREATE SEQUENCE rooms_seq START WITH 7 INCREMENT BY 1;
+
+Sequence created.
+
+SQL> CREATE SEQUENCE users_seq START WITH 3 INCREMENT BY 1;
+
+Sequence created.
+
+SQL> CREATE SEQUENCE bookings_seq START WITH 3 INCREMENT BY 1;
+
+Sequence created.
+
+SQL> CREATE SEQUENCE reviews_seq START WITH 3 INCREMENT BY 1;
+
+Sequence created.
+
+SQL> CREATE SEQUENCE contact_seq START WITH 3 INCREMENT BY 1;
+
+Sequence created.
+
+SQL> CREATE SEQUENCE admins_seq START WITH 2 INCREMENT BY 1;
+
+Sequence created.
+
+SQL>
+SQL> -- =========================
+SQL> -- INSERT DATA
+SQL> -- =========================
+SQL>
+SQL> -- Rooms
+SQL> INSERT INTO Rooms VALUES(1,'Deluxe Room','Deluxe',5000,'room1.jpg','Spacious deluxe room');
+
+1 row created.
+
+SQL> INSERT INTO Rooms VALUES(2,'Luxury Room','Luxury',7000,'room2.jpg','Luxury amenities room');
+
+1 row created.
+
+SQL> INSERT INTO Rooms VALUES(3,'Suite','Suite',10000,'room3.jpg','Suite with sea view');
+
+1 row created.
+
+SQL> INSERT INTO Rooms VALUES(4,'Family Room','Family',6000,'room4.jpg','Perfect for families with children');
+
+1 row created.
+
+SQL> INSERT INTO Rooms VALUES(5,'Single Room','Single',3000,'room5.jpg','Cozy single room for solo travelers');
+
+1 row created.
+
+SQL> INSERT INTO Rooms VALUES(6,'Presidential Suite','Luxury',15000,'room6.jpg','Top-notch luxury with all amenities');
+
+1 row created.
+
+SQL>
+SQL> -- Users
+SQL> INSERT INTO Users VALUES(1,'john_doe','password123','John Doe','john@example.com','017XXXXXXXX');
+
+1 row created.
+
+SQL> INSERT INTO Users VALUES(2,'jane_smith','mypassword','Jane Smith','jane@example.com','018XXXXXXXX');
+
+1 row created.
+
+SQL>
+SQL> -- Bookings
+SQL> INSERT INTO Bookings VALUES(1,1,2,TO_DATE('2025-09-20','YYYY-MM-DD'),TO_DATE('2025-09-22','YYYY-MM-DD'),14000);
+
+1 row created.
+
+SQL> INSERT INTO Bookings VALUES(2,2,1,TO_DATE('2025-10-01','YYYY-MM-DD'),TO_DATE('2025-10-05','YYYY-MM-DD'),20000);
+
+1 row created.
+
+SQL>
+SQL> -- Reviews
+SQL> INSERT INTO Reviews VALUES(1,1,2,5,'Amazing room and service!',SYSDATE);
+
+1 row created.
+
+SQL> INSERT INTO Reviews VALUES(2,2,1,4,'Very comfortable stay.',SYSDATE);
+
+1 row created.
+
+SQL>
+SQL> -- Contact
+SQL> INSERT INTO Contact VALUES(1,'Alice','alice@example.com','Booking Inquiry','I want to know room availability.',SYSDATE);
+
+1 row created.
+
+SQL> INSERT INTO Contact VALUES(2,'Bob','bob@example.com','General Question','Do you have parking facility?',SYSDATE);
+
+1 row created.
+
+SQL>
+SQL> -- Admins
+SQL> INSERT INTO Admins VALUES(1,'admin','admin123','Super Admin');
+
+1 row created.
+
+SQL>
+SQL> COMMIT;
+
+Commit complete.
+
+SQL>
+SQL> -- =========================
+SQL> -- OPTIONAL: NEW INSERTS USING SEQUENCES
+SQL> -- =========================
+SQL>
+SQL> -- Rooms
+SQL> INSERT INTO Rooms (room_id, room_name, room_type, price, image, description)
+  2  VALUES (rooms_seq.nextval, 'Executive Room', 'Executive', 8000, 'room7.jpg', 'Stylish and comfortable');
+
+1 row created.
+
+SQL>
+SQL> -- Users
+SQL> INSERT INTO Users (user_id, username, password, full_name, email, phone)
+  2  VALUES (users_seq.nextval, 'alice_w', 'alice123', 'Alice Wonderland', 'alice@example.com', '019XXXXXXXX');
+
+1 row created.
+
+SQL>
+SQL> -- Bookings
+SQL> INSERT INTO Bookings (booking_id, user_id, room_id, check_in, check_out, total_amount)
+  2  VALUES (bookings_seq.nextval, 3, 4, TO_DATE('2025-12-01','YYYY-MM-DD'), TO_DATE('2025-12-05','YYYY-MM-DD'), 24000);
+
+1 row created.
+
+SQL>
+SQL> -- Reviews
+SQL> INSERT INTO Reviews (review_id, user_id, room_id, rating, review_comment)
+  2  VALUES (reviews_seq.nextval, 3, 4, 5, 'Excellent stay with amazing facilities!');
+
+1 row created.
+
+SQL>
+SQL> -- Contact
+SQL> INSERT INTO Contact (contact_id, name, email, subject, message)
+  2  VALUES (contact_seq.nextval, 'Charlie', 'charlie@example.com', 'Feedback', 'Great service and rooms!');
+
+1 row created.
+
+SQL>
+SQL> -- Admins
+SQL> INSERT INTO Admins (admin_id, username, password, full_name)
+  2  VALUES (admins_seq.nextval, 'admin2', 'admin456', 'Second Admin');
+
+1 row created.
+
+SQL>
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> ALTER TABLE Users
+  2  ADD user_role VARCHAR2(20) DEFAULT 'user';
+
+Table altered.
+
+SQL>
+SQL> COMMIT;
+
+Commit complete.
+ INSERT INTO Reviews(review_id, user_id, room_id, rating, review_comment)
+VALUES(1, 1, 2, 5, 'Amazing room and service!');
+
+INSERT INTO Reviews(review_id, user_id, room_id, rating, review_comment)
+VALUES(2, 2, 1, 4, 'Very comfortable stay.');
+
+COMMIT;
